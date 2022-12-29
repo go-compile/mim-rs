@@ -1,8 +1,8 @@
-use byteorder::{ByteOrder, LittleEndian, BigEndian};
+use byteorder::{BigEndian, ByteOrder};
 use hkdf::Hkdf;
 use sha2::{Digest, Sha256};
 
-const colours: [[u8; 3]; 16] = [
+const COLOURS: [[u8; 3]; 16] = [
     [0, 0, 0],       // black
     [194, 54, 33],   // Red
     [37, 188, 36],   // Green
@@ -29,11 +29,10 @@ fn main() {
     let moz = Mozaic::new(&fingerprint);
 
     println!("Fingerprint: {:X?}", &fingerprint);
-    println!("HKDF'ed: {:X?}", &moz.data);
-    println!("{}", &moz.ANSI());
+    println!("{}", &moz.ansi());
 }
 
-struct Mozaic {
+pub struct Mozaic {
     data: [u8; 32],
 }
 
@@ -48,7 +47,7 @@ impl Mozaic {
         return moz;
     }
 
-    pub fn ANSI(&self) -> String {
+    pub fn ansi(&self) -> String {
         let rows = 8;
         let mut output = "".to_string();
 
@@ -65,46 +64,40 @@ impl Mozaic {
             } else if i % 2 == 1 && i != 0 {
                 // per row, every fourth byte add space and create parallel square
 
-               let (l,r) = splitByte(&mut u16buf,self.data[i]);
+                let (l, r) = split_byte(&mut u16buf, self.data[i]);
 
                 // add left and right plus a space after ANSI reset
-                output += &(ansiRGB(l)
-                    + "  "
-                    + &(ansiRGB(r) + &"  \x1b[0m  "));
+                output += &(ansi_rgb(l) + "  " + &(ansi_rgb(r) + &"  \x1b[0m  "));
                 continue;
             }
 
-			let (l,r) = splitByte(&mut u16buf,self.data[i]);
-			output += &(ansiRGB(l)
-                    + "  "
-                    + &(ansiRGB(r))+"  \x1b[0m");
-        //  TODO: add coloured square
+            let (l, r) = split_byte(&mut u16buf, self.data[i]);
+            output += &(ansi_rgb(l) + "  " + &(ansi_rgb(r)) + "  \x1b[0m");
         }
 
-        return output+"\x1b[0m";
+        return output + "\x1b[0m";
     }
 }
 
-fn splitByte(u16buf: &mut [u8;2], b: u8) -> ([u8;3],[u8;3]){
+fn split_byte(u16buf: &mut [u8; 2], b: u8) -> ([u8; 3], [u8; 3]) {
+    // shift right 4 then back 4 to clear the right most 4 bits
+    let l = b >> 4;
+    // shift right most 4 bits to start of byte, filling last 4 bits with zeros
+    let r = b << 4 >> 4;
 
-	 // shift right 4 then back 4 to clear the right most 4 bits
-	 let l = b >> 4;
-	 // shift right most 4 bits to start of byte, filling last 4 bits with zeros
-	 let r = b << 4>>4;
+    // assign left most byte in Little the left 4bit buffer
+    u16buf[1] = l;
+    let li = (BigEndian::read_u16(u16buf)) as usize;
 
-	 // assign left most byte in Little the left 4bit buffer
-	 u16buf[1] = l;
-	 let li = (BigEndian::read_u16(u16buf) ) as usize;
+    // assign left most byte in Little the right 4bit buffer
+    u16buf[1] = r;
+    let ri = (BigEndian::read_u16(u16buf)) as usize;
 
-	 // assign left most byte in Little the right 4bit buffer
-	 u16buf[1] = r;
-	 let ri = (BigEndian::read_u16(u16buf) ) as usize;
+    return (COLOURS[li], COLOURS[ri]);
+}
 
-	return (colours[li], colours[ri])
-} 
-
-// ansiRGB returns a ANSI escape sequence for the colour
-fn ansiRGB(rgb: [u8; 3]) -> String {
+// ansi_RGB returns a ANSI escape sequence for the colour
+fn ansi_rgb(rgb: [u8; 3]) -> String {
     return format!(
         "\x1b[38;2;{};{};{};48;2;{};{};{}m",
         rgb[0], rgb[1], rgb[2], rgb[0], rgb[1], rgb[2]
