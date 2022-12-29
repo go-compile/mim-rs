@@ -1,5 +1,8 @@
 # MIM-RS (Minimal Identity Mozaic)
 
+[![Version](https://img.shields.io/crates/v/mim?style=flat-square)](https://crates.io/crates/mim)
+![License](https://img.shields.io/crates/l/mim?style=flat-square)
+
 <div align="center">
 	<img width="150px" src=".github/rust.svg" />
 	
@@ -47,4 +50,11 @@ fn main() {
 	// print Mozaic as ASNI
     println!("\n{}", &moz.ansi());
 }
+```
+
+## Install
+
+```toml
+[dependencies]
+mim = "0.1.0"
 ```
