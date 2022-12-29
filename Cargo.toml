@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 hkdf = "0.12.3"
 sha2="*"
+byteorder = "1.4.3"
