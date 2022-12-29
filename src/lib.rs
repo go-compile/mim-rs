@@ -1,6 +1,6 @@
 use byteorder::{BigEndian, ByteOrder};
 use hkdf::Hkdf;
-use sha2::{Digest, Sha256};
+use sha2::{Sha256};
 
 const COLOURS: [[u8; 3]; 16] = [
     [0, 0, 0],       // black
