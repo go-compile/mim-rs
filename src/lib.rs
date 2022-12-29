@@ -1,3 +1,32 @@
+//! MIM is a Hash Visualization format utilising 4x4 colour matrixes. This provides a quick and easy method to compare fingerprints, e.g. SSH keys, x509 certs etc. 
+//! 
+//! MIM is cross platform and provides 256bit security without compromise.
+//! 
+//! View the [Go Implementation](https://github.com/go-compile/mim).
+//! 
+//! # Example
+//! ```
+//! use mim_rs::{Mozaic};
+//! use sha2::{Sha256,Digest};
+//! use hex;
+//! 
+//! fn main() {
+//! 	// create the fingerprint in the typical way
+//! 	let mut hasher = Sha256::new();
+//!     hasher.update("certificate contents would typically go here");
+//!     let fingerprint = hasher.finalize();
+//! 
+//! 	// provide the fingerprint to MIM
+//!     let moz = Mozaic::new(&fingerprint);
+//! 
+//! 	// print fingerprint
+//!     println!("Fingerprint: {}", hex::encode(&fingerprint));
+//! 
+//! 	// print Mozaic as ASNI
+//!     println!("\n{}", &moz.ansi());
+//! }
+//! ```
+
 use byteorder::{BigEndian, ByteOrder};
 use hkdf::Hkdf;
 use sha2::{Sha256};
