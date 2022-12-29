@@ -1,4 +1,4 @@
-use mim_rs::{Mozaic};
+use mim::{Mozaic};
 use sha2::{Sha256,Digest};
 use hex;
 

@@ -28,7 +28,7 @@ MIM outputs coloured **ANSI escape codes**.
 ## Example
 
 ```rust
-use mim_rs::{Mozaic};
+use mim::{Mozaic};
 use sha2::{Sha256,Digest};
 use hex;
 

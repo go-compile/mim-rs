@@ -6,7 +6,7 @@
 //! 
 //! # Example
 //! ```
-//! use mim_rs::{Mozaic};
+//! use mim::{Mozaic};
 //! use sha2::{Sha256,Digest};
 //! use hex;
 //! 
@@ -55,7 +55,7 @@ const COLOURS: [[u8; 3]; 16] = [
 ///
 /// # Example
 /// ```
-/// use mim_rs::{Mozaic};
+/// use mim::{Mozaic};
 /// use sha2::{Sha256,Digest};
 /// use hex;
 /// 
