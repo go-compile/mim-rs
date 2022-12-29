@@ -2,6 +2,7 @@ use byteorder::{BigEndian, ByteOrder};
 use hkdf::Hkdf;
 use sha2::{Sha256};
 
+/// COLOURS holds a list of RGB values used for each cell
 const COLOURS: [[u8; 3]; 16] = [
     [0, 0, 0],       // black
     [194, 54, 33],   // Red
@@ -21,11 +22,34 @@ const COLOURS: [[u8; 3]; 16] = [
     [233, 235, 235], // Bright Whites
 ];
 
+/// Mozaic is a hash visualisation algorithm using 4x4 matrixes.
+///
+/// # Example
+/// ```
+/// use mim_rs::{Mozaic};
+/// use sha2::{Sha256,Digest};
+/// use hex;
+/// 
+/// fn main() {
+/// 	// create the fingerprint in the typical way
+/// 	let mut hasher = Sha256::new();
+///     hasher.update("certificate contents would typically go here");
+///     let fingerprint = hasher.finalize();
+/// 
+/// 	// provide the fingerprint to MIM
+///     let moz = Mozaic::new(&fingerprint);
+/// 
+/// 	// print Mozaic as ASNI
+///     println!("\n{}", &moz.ansi());
+/// }
+/// ```
 pub struct Mozaic {
     data: [u8; 32],
 }
 
 impl Mozaic {
+	/// New takes a array of bytes then uses HKDF with SHA256 to process
+	/// the buffer into a new fixed length 256bit buffer
     pub fn new(data: &[u8]) -> Self {
         let mut moz = Mozaic { data: [0u8; 32] };
 
@@ -36,6 +60,7 @@ impl Mozaic {
         return moz;
     }
 
+	/// ansi will print the Mozaic using ANSI escape codes
     pub fn ansi(&self) -> String {
         let rows = 8;
         let mut output = "".to_string();
@@ -68,6 +93,8 @@ impl Mozaic {
     }
 }
 
+/// split byte takes a u8 and splits it in half providing two u4
+/// which are then used to index the COLOURS pallette.
 fn split_byte(u16buf: &mut [u8; 2], b: u8) -> ([u8; 3], [u8; 3]) {
     // shift left most 4 bits to end of byte, filling first 4 bits with zeros
 	let l = b >> 4;
