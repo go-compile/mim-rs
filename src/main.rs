@@ -51,7 +51,7 @@ impl Mozaic {
         let rows = 8;
         let mut output = "".to_string();
 
-        // assign a uint16 for reading byets in Little Endian byte order.
+        // assign a uint16 for reading byte in Big Endian byte order.
         // It would be preferred to use a u8 buffer but there is not a option
         // to read u8s in the byteorder crate.
         let mut u16buf = [0u8; 2];
@@ -80,9 +80,9 @@ impl Mozaic {
 }
 
 fn split_byte(u16buf: &mut [u8; 2], b: u8) -> ([u8; 3], [u8; 3]) {
-    // shift right 4 then back 4 to clear the right most 4 bits
-    let l = b >> 4;
-    // shift right most 4 bits to start of byte, filling last 4 bits with zeros
+    // shift left most 4 bits to end of byte, filling first 4 bits with zeros
+	let l = b >> 4;
+    // shift right 4 then back 4 to clear the right most 4 bits then shift back
     let r = b << 4 >> 4;
 
     // assign left most byte in Little the left 4bit buffer
