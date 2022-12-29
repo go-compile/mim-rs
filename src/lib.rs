@@ -21,17 +21,6 @@ const COLOURS: [[u8; 3]; 16] = [
     [233, 235, 235], // Bright Whites
 ];
 
-fn main() {
-    let mut hasher = Sha256::new();
-    hasher.update("certificate contents would typically go here");
-    let fingerprint = hasher.finalize();
-
-    let moz = Mozaic::new(&fingerprint);
-
-    println!("Fingerprint: {:X?}", &fingerprint);
-    println!("{}", &moz.ansi());
-}
-
 pub struct Mozaic {
     data: [u8; 32],
 }
